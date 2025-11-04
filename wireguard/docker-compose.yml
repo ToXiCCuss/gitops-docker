@@ -3,11 +3,6 @@ volumes:
 
 services:
   wg-easy:
-    #environment:
-    #  Optional:
-    #  - HOST=0.0.0.0
-    #  - INSECURE=false
-
     image: ghcr.io/wg-easy/wg-easy:15
     container_name: wg-easy
     networks:
@@ -19,7 +14,6 @@ services:
       - /lib/modules:/lib/modules:ro
     ports:
       - "51820:51820/udp"
-      - "51821:51821/tcp"
     restart: unless-stopped
     cap_add:
       - NET_ADMIN
@@ -40,3 +34,5 @@ networks:
       config:
         - subnet: 10.42.42.0/24
         - subnet: fdcc:ad94:bacf:61a3::/64
+  proxy-network:
+    external: true
