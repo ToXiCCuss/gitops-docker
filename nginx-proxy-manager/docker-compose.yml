@@ -18,3 +18,4 @@ networks:
   proxy-network:
     name: proxy-network
     driver: bridge
+    attachable: true
