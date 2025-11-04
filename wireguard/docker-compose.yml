@@ -16,6 +16,8 @@ services:
     ports:
       - "51820:51820/udp"
 #      - "51821:51821/tcp"
+    expose:
+      - "51821"
     restart: unless-stopped
     cap_add:
       - NET_ADMIN
