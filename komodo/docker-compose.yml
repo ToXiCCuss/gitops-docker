@@ -1,22 +1,44 @@
+################################
+# 🦎 KOMODO COMPOSE - MONGO 🦎 #
+################################
+
+## This compose file will deploy:
+##   1. MongoDB
+##   2. Komodo Core
+##   3. Komodo Periphery
+
 services:
-  core:
-    container_name: core
-    image: ghcr.io/moghtech/komodo-core:1.19.5
+  mongo:
+    image: mongo
     labels:
-      komodo.skip: # Prevent Komodo from stopping with StopAllContainers
+      komodo.skip:
+    command: --quiet --wiredTigerCacheSizeGB 0.25
     restart: unless-stopped
-    expose:
-      - "9120"
+    volumes:
+      - mongo-data:/data/db
+      - mongo-config:/data/configdb
     environment:
-      KOMODO_DATABASE_ADDRESS: localhost:27017
+      MONGO_INITDB_ROOT_USERNAME: ${KOMODO_DB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${KOMODO_DB_PASSWORD}
+  
+  core:
+    image: ghcr.io/moghtech/komodo-core:${COMPOSE_KOMODO_IMAGE_TAG:-latest}
+    labels:
+      komodo.skip:
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    ports:
+      - "9120:9120"
+    environment:
+      KOMODO_DATABASE_ADDRESS: mongo:27017
       KOMODO_DATABASE_USERNAME: ${KOMODO_DB_USERNAME}
       KOMODO_DATABASE_PASSWORD: ${KOMODO_DB_PASSWORD}
     volumes:
       - ${COMPOSE_KOMODO_BACKUPS_PATH}:/backups
 
   periphery:
-    container_name: periphery
-    image: ghcr.io/moghtech/komodo-periphery:1.19.5
+    image: ghcr.io/moghtech/komodo-periphery:${COMPOSE_KOMODO_IMAGE_TAG:-latest}
     labels:
       komodo.skip:
     restart: unless-stopped
@@ -24,3 +46,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /proc:/proc
       - ${PERIPHERY_ROOT_DIRECTORY:-/etc/komodo}:${PERIPHERY_ROOT_DIRECTORY:-/etc/komodo}
+
+volumes:
+  mongo-data:
+  mongo-config:
