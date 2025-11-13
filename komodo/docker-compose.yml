@@ -36,7 +36,9 @@ services:
       KOMODO_DATABASE_PASSWORD: ${KOMODO_DB_PASSWORD}
     volumes:
       - ${COMPOSE_KOMODO_BACKUPS_PATH}:/backups
-
+    networks:
+      - proxy-network
+      
   periphery:
     image: ghcr.io/moghtech/komodo-periphery:${COMPOSE_KOMODO_IMAGE_TAG:-latest}
     labels:
@@ -50,3 +52,10 @@ services:
 volumes:
   mongo-data:
   mongo-config:
+
+
+networks:
+  proxy-network:
+    name: proxy-network
+    driver: bridge
+    attachable: true

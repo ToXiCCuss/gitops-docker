@@ -12,10 +12,8 @@ services:
       - ./data:/data
       - ./letsencrypt:/etc/letsencrypt
     networks:
-      - proxy-network
+      proxy-network:
 
 networks:
   proxy-network:
-    name: proxy-network
-    driver: bridge
-    attachable: true
+    external: true
