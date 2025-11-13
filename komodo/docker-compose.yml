@@ -30,6 +30,8 @@ services:
       - mongo
     ports:
       - "9120:9120"
+    links:
+      - mongo
     environment:
       KOMODO_DATABASE_ADDRESS: mongo:27017
       KOMODO_DATABASE_USERNAME: ${KOMODO_DB_USERNAME}
@@ -38,7 +40,7 @@ services:
       - ${COMPOSE_KOMODO_BACKUPS_PATH}:/backups
     networks:
       - proxy-network
-      
+
   periphery:
     image: ghcr.io/moghtech/komodo-periphery:${COMPOSE_KOMODO_IMAGE_TAG:-latest}
     labels:
