@@ -19,14 +19,15 @@ services:
   cache:
     image: redis:8.2.3-bookworm
     restart: always
+    networks:
+      ptero0:
   panel:
     image: ghcr.io/pterodactyl/panel:v1.11.11
     restart: always
     env_file: .env
     networks:
       proxy-network:
-    links:
-      - cache
+      ptero0:
     volumes:
       - "/opt/pterodactyl/panel/appvar/:/app/var/"
       - "/opt/pterodactyl/panel/nginx/:/etc/nginx/http.d/"
