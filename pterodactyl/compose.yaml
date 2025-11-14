@@ -3,9 +3,9 @@ services:
     image: ghcr.io/pterodactyl/wings:v1.11.13
     restart: always
     networks:
-      - ptero0
+      ptero0:
+      proxy-network:
     ports:
-      - "8443:443"
       - "2022:2022"
     tty: true
     env_file: .env
@@ -23,37 +23,14 @@ services:
     image: ghcr.io/pterodactyl/panel:v1.11.11
     restart: always
     env_file: .env
-    ports:
-      - "802:80"
-      - "4432:443"
+    networks:
+      proxy-network:
     links:
       - cache
     volumes:
       - "/opt/pterodactyl/panel/appvar/:/app/var/"
       - "/opt/pterodactyl/panel/nginx/:/etc/nginx/http.d/"
       - "/opt/pterodactyl/panel/logs/:/app/storage/logs"
-    environment:
-      APP_ENV: "production"
-      APP_ENVIRONMENT_ONLY: "false"
-      APP_URL: "https://webinterface.rjst.de"
-      APP_TIMEZONE: "Europe/Berlin"
-      APP_SERVICE_AUTHOR: "rjstdevelopement@gmail.com"
-      MAIL_FROM: "rjstdevelopement@gmail.com"
-      MAIL_DRIVER: "smtp"
-      MAIL_HOST: "smtp.gmail.com"
-      MAIL_PORT: "587"
-      MAIL_USERNAME: "rjstdevelopement@gmail.com"
-      MAIL_PASSWORD: "XXX"
-      MAIL_ENCRYPTION: "true"
-      DB_HOST: "mariadb.server.lan"
-      DB_PORT: "3306"
-      DB_DATABASE: "pterodactyl"
-      DB_USERNAME: "app_pterodactyl"
-      DB_PASSWORD: "XXX"
-      CACHE_DRIVER: "redis"
-      SESSION_DRIVER: "redis"
-      QUEUE_DRIVER: "redis"
-      REDIS_HOST: "cache"
     depends_on:
       - cache
 
@@ -66,3 +43,5 @@ networks:
         - subnet: "192.53.0.0/16"
     driver_opts:
       com.docker.network.bridge.name: ptero0
+  proxy-network:
+    external: true
