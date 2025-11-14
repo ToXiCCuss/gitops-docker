@@ -1,6 +1,6 @@
 services:
   wings:
-    image: ghcr.io/pterodactyl/wings:latest
+    image: ghcr.io/pterodactyl/wings:v1.11.13
     restart: always
     networks:
       - ptero0
@@ -8,11 +8,7 @@ services:
       - "8443:443"
       - "2022:2022"
     tty: true
-    environment:
-      TZ: "Europe/Berlin"
-      WINGS_UID: 988
-      WINGS_GID: 988
-      WINGS_USERNAME: pterodactyl
+    env_file: .env
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "/var/lib/docker/containers:/var/lib/docker/containers"
@@ -21,11 +17,12 @@ services:
       - "/var/log/pterodactyl:/var/log/pterodactyl"
       - "/tmp/pterodactyl/:/tmp/pterodactyl/"
   cache:
-    image: redis:alpine
+    image: redis:8.2.3-bookworm
     restart: always
   panel:
-    image: ghcr.io/pterodactyl/panel:latest
+    image: ghcr.io/pterodactyl/panel:v1.11.11
     restart: always
+    env_file: .env
     ports:
       - "802:80"
       - "4432:443"
@@ -59,26 +56,6 @@ services:
       REDIS_HOST: "cache"
     depends_on:
       - cache
-  cadvisor:
-    image: gcr.io/cadvisor/cadvisor:latest
-    container_name: cadvisor
-    restart: unless-stopped
-    ports:
-      - "8080:8080"
-    privileged: true
-    devices:
-      - /dev/kmsg
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:ro
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-      - /dev/disk/:/dev/disk:ro
-    networks:
-      - ptero0
-    command:
-      - '--housekeeping_interval=10s'
-      - '--docker_only=true'
 
 networks:
   ptero0:
