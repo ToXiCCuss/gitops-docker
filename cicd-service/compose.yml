@@ -1,0 +1,10 @@
+services:
+  cicd-service:
+    image: docker.io/toxiccuss/cicd-service:0.0.1-SNAPSHOT
+    container_name: cicd-service
+    restart: unless-stopped
+    networks:
+      proxy-network:
+networks:
+  proxy-network:
+    external: true
