@@ -1,6 +1,6 @@
 services:
   cicd-service:
-    image: docker.io/toxiccuss/cicd-service:0.0.1-SNAPSHOT
+    image: docker.io/toxiccuss/cicd-service:0.0.2
     container_name: cicd-service
     restart: unless-stopped
     networks:
