@@ -5,6 +5,8 @@ services:
     restart: unless-stopped
     networks:
       proxy-network:
+    mem_limit: 2g      # max. 512 MB RAM
+    cpus: "4.00"
 networks:
   proxy-network:
     external: true
